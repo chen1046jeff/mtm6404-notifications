@@ -1,32 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useState } from "react"
+import notificationsData from "./notifications"
+import "./App.css"
+
+function Notification({ id, name, message, onClear, children }) {
+  return (
+    <div className="card">
+      <h3>{name}</h3>
+      <p>{message}</p>
+      {children}
+      <br />
+      <button onClick={() => onClear(id)}>Clear</button>
+    </div>
+  )
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [notifications, setNotifications] = useState(notificationsData)
+
+  const clearNotification = (id) => {
+    const updatedNotifications = notifications.filter(
+      (notification) => notification.id !== id
+    )
+    setNotifications(updatedNotifications)
+  }
+
+  const clearAll = () => {
+    setNotifications([])
+  }
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div>
+      <h1>Notifications</h1>
+      <h2>Total: {notifications.length}</h2>
+      <button onClick={clearAll}>Clear All</button>
+
+      {notifications.map((notification) => (
+        <Notification
+          key={notification.id}
+          id={notification.id}
+          name={notification.name}
+          message={notification.message}
+          onClear={clearNotification}
+        >
+          <small>ID: {notification.id}</small>
+        </Notification>
+      ))}
     </div>
   )
 }
